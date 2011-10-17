@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" output="rt/classes" path="rt/src"/>
+	<classpathentry kind="src" path="dartc/mock-src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="lib" path="lib/asm-debug-all-4.0.jar" sourcepath="lib/asm-src.zip"/>
+	<classpathentry kind="lib" path="lib/dartc.jar"/>
+	<classpathentry kind="output" path="classes"/>
+</classpath>

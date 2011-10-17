@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="jar">
+    <description>
+            build a jar containing a patched version of dartc
+    </description>
+
+	<property name="dart-compiler-src" location="../../jdart-compiler/java"/>
+	<property name="mock-src" location="mock-src"/>
+	<property name="dartc-classes" location="dartc-classes"/>
+	<property name="src" location="src"/>
+	<property name="classes" location="classes"/>
+	<property name="lib" location="../lib"/>
+	<property name="dartc.jar" location="../lib/dartc.jar"/>
+	
+	<target name="clean">
+		<delete dir="${dartc-classes}"/>
+		<mkdir dir="${dartc-classes}"/>
+	</target>
+	
+    <target name="compile">
+    	<mkdir dir="${dartc-classes}"/>
+        <javac srcdir="${mock-src}:${dart-compiler-src}"
+               destdir="${dartc-classes}"
+               classpath="${lib}/guava-10.0.jar:${lib}/google-closure-compiler.jar"
+               debug="on"
+        	   includeantruntime="false"
+        	   excludes="**/metrics/Tracer.java,**/runner/JavaScriptLauncher.java,**/runner/RhinoLauncher.java,**/runner/V8Launcher.java,**/js/**/*.java"/>
+    </target>
+	
+	<target name="jar" depends="compile">
+		<jar basedir="${dartc-classes}" destfile="${dartc.jar}">
+			<manifest>
+				<attribute name="Class-Path" value="guava-10.0.jar google-closure-compiler.jar"/>
+			</manifest>
+		</jar>
+    </target>
+
+</project>
