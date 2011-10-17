@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project" default="jar">
+    <description>
+            jdart compiler
+    </description>
+
+	<property name="src" location="src"/>
+	<property name="classes" location="classes"/>
+	<property name="rt-src" location="rt/src"/>
+	<property name="rt-classes" location="rt/classes"/>
+	<property name="lib" location="lib"/>
+	<property name="dartc.jar" location="${lib}/dartc.jar"/>
+	<property name="asm.jar" location="${lib}/asm-debug-all-4.0.jar"/>
+	<property name="jdartc.jar" location="jdartc.jar"/>
+	
+	<target name="clean">
+			<delete dir="${classes}"/>
+			<mkdir dir="${classes}"/>
+		    <delete dir="${rt-classes}"/>
+		    <mkdir dir="${rt-classes}"/>
+		    <delete file="${jdartc.jar}"/>
+		</target>
+	
+    <target name="compile">
+    	<javac srcdir="${rt-src}"
+    	       destdir="${rt-classes}"
+    		   includeantruntime="no"
+    	       debug="on"/>
+        <javac srcdir="${src}"
+               destdir="${classes}"
+        	   includeantruntime="no"
+               classpath="${dartc.jar}:${asm.jar}:${rt-classes}"
+               debug="on"/>
+    </target>
+	
+	<target name="jar" depends="compile">
+		<jar destfile="${jdartc.jar}">
+			<fileset dir="${classes}"/>
+			<fileset dir="${rt-classes}"/>
+			<zipfileset includes="**/*.class" src="${dartc.jar}"/>
+			<zipfileset includes="**/*.class" src="${asm.jar}"/>
+			<zipfileset includes="**/*.class" src="lib/guava-10.0.jar"/>
+			<zipfileset includes="**/*.class" src="lib/google-closure-compiler.jar"/>
+			<manifest>
+				<attribute name="Main-Class" value="org.jdart.main.Main"/>
+				<!-- attribute name="Class-Path" value="dartc.jar asm-debug-all-4.0.jar"/ -->
+			</manifest>
+		</jar>
+	</target>
+
+</project>
