@@ -1,0 +1,68 @@
+The jdart compiler is a backend of the Dart to JavaScript compiler
+provided by Google [1].
+
+There are several components in the jdart compiler.
+  - The TypeChecker (backend.TypeChecker)
+    It propagate the type information from the Dart compiler
+    in a form which is suitable for the Java Virtual Machine.
+  - The generator (backend.JVMGen)
+    that map each Dart instruction to the JVM one
+  - The runtime (runtime.RT)
+    provided entry points that will be called by the JVM at
+    runtime to resolve things like function call, method call, field access.
+    
+    
+TODO LIST (* easy, ** medium, *** hard):
+  - modify the Dart plugin(**)
+    provided by Google to be able to use it to run jdart
+    
+  - reuse the typechecker analysis(**)
+    record all seen types to only embed the classes (runtime or not)
+    that are needed.
+
+  - implement static method
+    not hard, just have to be done.
+
+  - implement field access(**)
+    add a new entry point for field access
+    
+  - implement getter/setter(**)
+    add a new entry point for getter/setter
+    may share the same entrypoint as field access
+
+  - implement methodNotSupported(**)
+    I should first read the spec, but that should not be hard.
+
+  - implement operator calls(*)
+    For all operators but the one on int/double.
+    They are method call so they should reuse the same RT entrypoint (methodCall)
+  
+  - implement int/double operators(***)
+    Require specific entrypoints to be fast (avoid boxing)
+    Not that simple to implement.
+  
+  - implement if statement(*)
+  
+  - implement lazy || and && (**)
+    in fact there is two subtaks depending if && and || or in an if or not
+    
+  - implement loops (**)
+    break, continue have to be supported without
+    generating dead bytecodes. 
+    
+  - implement 'is' operator(*)
+    should be mapped to instanceof for non parameterized type at least
+    
+  - implement parameterized type(***)
+    I don't fully understand that part of the spec :)
+    
+  - implement named arguments(***)
+    change all entry points to add named arguments in a way that
+    avoid to box arguments in a map.
+  
+  - implement throw and try/catch (**)
+    may be harder in production mode
+  
+  - implement all other instructions
+    
+[1] http://code.google.com/p/dart/
