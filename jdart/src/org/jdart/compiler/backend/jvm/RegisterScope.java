@@ -12,11 +12,14 @@ public class RegisterScope {
   private final HashMap<Element, Integer> slotMap =
       new HashMap<>();
 
-  public RegisterScope(RegisterScope scope) {
+  public RegisterScope(RegisterScope scope, boolean isStatic) {
     this.scope = scope;
+    this.slotCount = (isStatic)? 0: 1;
   }
   
   public int store(Element element, Type type) {
+    assert !slotMap.containsKey(element);
+    
     int slot = slotCount;
     slotMap.put(element, slot);
     slotCount += type.getSize();
