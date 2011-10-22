@@ -169,8 +169,8 @@ public class JVMGen implements Visitor<Void, JVMGen.Env> {
       return scope;
     }
     
-    public Env methodEnv(MethodVisitor mv) {
-      return new Env(classVisitor, mv, new RegisterScope(null));
+    public Env methodEnv(MethodVisitor mv, boolean isStatic) {
+      return new Env(classVisitor, mv, new RegisterScope(null, isStatic));
     }
 
     public void load(Element element, Type type) {
@@ -281,7 +281,9 @@ public class JVMGen implements Visitor<Void, JVMGen.Env> {
   }
   
   private void mayInsertCast(MethodVisitor mv, Type leftType, Type rightType) {
-    // FIXME, do something here
+    if (!leftType.equals(rightType)) {
+      throw new UnsupportedOperationException("NYI");
+    }
   }
   
   private static void generateEntryPoint(ClassVisitor cv, LibraryElement element) {
@@ -442,10 +444,12 @@ public class JVMGen implements Visitor<Void, JVMGen.Env> {
     Modifiers modifiers = node.getModifiers();
     
     int flags;
+    boolean isStatic;
     String name;
     EnclosingElement enclosingElement = methodElement.getEnclosingElement();
     if (methodElement.isConstructor()) {
       flags = ACC_PUBLIC;
+      isStatic = false;
       name = enclosingElement.getName();
     } else {
       name = methodElement.getName();
@@ -454,9 +458,9 @@ public class JVMGen implements Visitor<Void, JVMGen.Env> {
         name = "__main__";
       }
 
-      flags = ACC_PUBLIC |
-          ((enclosingElement instanceof ClassElement)? 0: ACC_STATIC) |
-          ((modifiers.isStatic())? ACC_STATIC: 0);
+      isStatic = modifiers.isStatic() || enclosingElement instanceof LibraryElement;
+      
+      flags = ACC_PUBLIC | ((isStatic)? ACC_STATIC: 0);
 
       if (modifiers.isNative()) {
         name = '@' + name; // don't use an annotation because the JDK implementation
@@ -468,7 +472,13 @@ public class JVMGen implements Visitor<Void, JVMGen.Env> {
         name,
         asType(node).getDescriptor(),
         null, null);
-    env = env.methodEnv(mv);
+    env = env.methodEnv(mv, isStatic);
+    
+    // register parameters in scope
+    RegisterScope scope = env.getScope();
+    for(VariableElement parameter: methodElement.getParameters()) {
+      scope.store(parameter, asType(parameter.getNode()));
+    }
     
     if (methodElement.isConstructor()) {
       // first init initializer
