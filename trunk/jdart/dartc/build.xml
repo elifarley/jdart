@@ -24,7 +24,7 @@
                classpath="${lib}/guava-10.0.jar:${lib}/google-closure-compiler.jar"
                debug="on"
         	   includeantruntime="false"
-        	   excludes="**/metrics/Tracer.java,**/runner/JavaScriptLauncher.java,**/runner/RhinoLauncher.java,**/runner/V8Launcher.java,**/js/**/*.java"/>
+        	   excludes="**/metrics/Tracer.java,**/runner/DartRunner.java,**/runner/JavaScriptLauncher.java,**/runner/RhinoLauncher.java,**/runner/V8Launcher.java,**/js/**/*.java"/>
     </target>
 	
 	<target name="jar" depends="compile">
