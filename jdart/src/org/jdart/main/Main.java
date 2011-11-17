@@ -42,25 +42,21 @@ public class Main {
       System.exit(1);
     }
     String script = args[0];
-    ArrayList<String> scriptArguments = new ArrayList<>();
-
+    
     LibrarySource app = new UrlLibrarySource(new File(script));
 
     ArrayList<LibrarySource> imports = new ArrayList<>();
 
-    DefaultDartCompilerListener listener = new DefaultDartCompilerListener() {
-      {
-        ((DefaultErrorFormatter) formatter).setOutputStream(stderr);
-      }
+    DefaultDartCompilerListener listener = new DefaultDartCompilerListener(stderr, false) {
       @Override
-      public void compilationWarning(DartCompilationError event) {
-        compilationError(event);
+      public void onError(DartCompilationError event) {
+        super.onError(event);
       }
     };
 
     compileApp(app, imports, new DartRunnerOptions(), listener);
 
-    if (listener.getProblemCount() != 0) {
+    if (listener.getErrorCount() != 0) {
       throw new RunnerError("Compilation failed.");
     }
   }

@@ -119,4 +119,9 @@ public class SimpleCompilerConfiguration implements CompilerConfiguration {
     return new CompilerOptions();
   }
 
+  @Override
+  public boolean printMachineProblems() {
+    return false;
+  }
+
 }
